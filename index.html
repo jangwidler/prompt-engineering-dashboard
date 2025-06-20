@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Prompt Engineering - Guide Complet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .tab:hover {
+            background: #e5e7eb;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .gradient-card {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .gradient-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .gradient-card p {
+            opacity: 0.9;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        .card p {
+            color: #6b7280;
+        }
+
+        .card.purple {
+            border-left-color: #8b5cf6;
+        }
+
+        .card.green {
+            border-left-color: #10b981;
+        }
+
+        .card.red {
+            border-left-color: #ef4444;
+        }
+
+        .expandable-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .expandable-header {
+            padding: 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            transition: background-color 0.3s ease;
+        }
+
+        .expandable-header:hover {
+            background: #f9fafb;
+        }
+
+        .expandable-content {
+            display: none;
+            padding: 0 24px 24px;
+        }
+
+        .expandable-content.show {
+            display: block;
+        }
+
+        .expandable-content .content-box {
+            background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .timeline {
+            background: linear-gradient(135deg, #f9fafb, #dbeafe);
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .timeline h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.blue { background: #3b82f6; }
+        .timeline-dot.purple { background: #8b5cf6; }
+        .timeline-dot.green { background: #10b981; }
+
+        .info-box {
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 12px;
+        }
+
+        .info-box.yellow {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+        }
+
+        .info-box.yellow h3,
+        .info-box.yellow p {
+            color: #92400e;
+        }
+
+        .info-box.green {
+            background: #dcfce7;
+            border: 1px solid #10b981;
+        }
+
+        .info-box.green h3,
+        .info-box.green p {
+            color: #065f46;
+        }
+
+        .info-box.indigo {
+            background: #e0e7ff;
+            border: 1px solid #6366f1;
+        }
+
+        .info-box.indigo h3,
+        .info-box.indigo p {
+            color: #3730a3;
+        }
+
+        .mistake-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .mistake-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #ef4444;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .practice-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #10b981;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .example-header {
+            background: linear-gradient(135deg, #e0e7ff, #dbeafe);
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .example-header h3 {
+            font-size: 1.1rem;
+            color: #1f2937;
+        }
+
+        .example-content {
+            padding: 24px;
+        }
+
+        .example-box {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .example-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .quiz-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            padding: 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz-header:hover {
+            background: #f9fafb;
+        }
+
+        .quiz-number {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .quiz-question {
+            flex: 1;
+        }
+
+        .quiz-question h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .quiz-answer {
+            display: none;
+            padding: 0 24px 24px;
+            margin-left: 48px;
+        }
+
+        .quiz-answer.show {
+            display: block;
+        }
+
+        .quiz-answer .answer-box {
+            background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .quiz-answer p {
+            color: #374151;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .chevron {
+            color: #6b7280;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .chevron.rotated {
+            transform: rotate(90deg);
+        }
+
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            font-size: 0.9rem;
+        }
+
+        .methodology-item {
+            text-align: center;
+            padding: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mistake-list {
+                grid-template-columns: 1fr;
+            }
+
+            .methodology-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .quiz-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .quiz-answer {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Tout ce qu'il faut savoir pour devenir un spécialiste du "Prompt engineering"</h1>
+            <p>Dashboard interactif - Guide complet</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">Vue d'ensemble</button>
+            <button class="tab" onclick="showTab('principles')">Principes</button>
+            <button class="tab" onclick="showTab('mistakes')">Erreurs à éviter</button>
+            <button class="tab" onclick="showTab('practices')">Bonnes pratiques</button>
+            <button class="tab" onclick="showTab('practice')">Mise en pratique</button>
+            <button class="tab" onclick="showTab('quiz')">Quiz</button>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Vue d'ensemble -->
+            <div id="overview" class="section active">
+                <div class="gradient-card">
+                    <h2>Vue d'ensemble du Prompt Engineering</h2>
+                    <p>Une discipline en pleine expansion qui transforme la façon dont nous interagissons avec l'IA générative.</p>
+                </div>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>Définition</h3>
+                        <p>L'art et la science de formuler des instructions précises pour guider les modèles d'IA vers les résultats souhaités.</p>
+                    </div>
+                    
+                    <div class="card purple">
+                        <h3>Importance</h3>
+                        <p>Interface critique entre l'intention humaine et les capacités des modèles d'IA, servant de pont technologique.</p>
+                    </div>
+                    
+                    <div class="card green">
+                        <h3>Évolution</h3>
+                        <p>Depuis 2023, compétence stratégique face à la démocratisation des modèles d'IA générative.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline">
+                    <h3>Chronologie de la discipline</h3>
+                    <div class="timeline-item">
+                        <div class="timeline-dot blue"></div>
+                        <div><strong>2019-2020:</strong> Origines dans les laboratoires de recherche</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot purple"></div>
+                        <div><strong>2022:</strong> Adoption grand public avec ChatGPT et DALL-E</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot green"></div>
+                        <div><strong>2024:</strong> Professionnalisation et création de postes dédiés</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Principes -->
+            <div id="principles" class="section">
+                <div class="gradient-card">
+                    <h2>Principes Fondamentaux</h2>
+                    <p>Cliquez sur chaque principe pour en découvrir les détails</p>
+                </div>
+                
+                <div class="expandable-card">
+                    <button class="expandable-header" onclick="toggleSection('clarity')">
+                        Clarté et précision
+                        <span class="chevron" id="chevron-clarity">▶</span>
+                    </button>
+                    <div id="content-clarity" class="expandable-content">
+                        <div class="content-box">
+                            <p>Un prompt efficace doit être sans ambiguïté, utilisant un langage clair et des instructions précises. Évitez le jargon inutile et les formulations vagues qui pourraient être mal interprétées par l'IA.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <button class="expandable-header" onclick="toggleSection('context')">
+                        Contextualisation appropriée
+                        <span class="chevron" id="chevron-context">▶</span>
+                    </button>
+                    <div id="content-context" class="expandable-content">
+                        <div class="content-box">
+                            <p>Fournissez suffisamment de contexte pour que l'IA comprenne l'intention derrière la demande. Définissez le cadre, l'objectif et l'audience visée pour obtenir une réponse adaptée.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <button class="expandable-header" onclick="toggleSection('structure')">
+                        Structure logique
+                        <span class="chevron" id="chevron-structure">▶</span>
+                    </button>
+                    <div id="content-structure" class="expandable-content">
+                        <div class="content-box">
+                            <p>Organisez votre prompt avec une introduction claire, suivie des instructions principales, puis des contraintes ou spécifications particulières. Une structure cohérente facilite le traitement par l'IA.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <button class="expandable-header" onclick="toggleSection('examples')">
+                        Utilisation d'exemples
+                        <span class="chevron" id="chevron-examples">▶</span>
+                    </button>
+                    <div id="content-examples" class="expandable-content">
+                        <div class="content-box">
+                            <p>Les exemples calibrent le modèle mental de l'IA, offrant un cadre de référence qui améliore significativement la précision et la pertinence des réponses générées.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <button class="expandable-header" onclick="toggleSection('iteration')">
+                        Approche itérative
+                        <span class="chevron" id="chevron-iteration">▶</span>
+                    </button>
+                    <div id="content-iteration" class="expandable-content">
+                        <div class="content-box">
+                            <p>Rarement parfait du premier coup, un prompt efficace émerge généralement après plusieurs cycles d'amélioration, chaque version bénéficiant des enseignements de la précédente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Erreurs à éviter -->
+            <div id="mistakes" class="section">
+                <div class="gradient-card" style="background: linear-gradient(135deg, #ef4444, #f97316);">
+                    <h2>Erreurs à Éviter</h2>
+                    <p>Les pièges les plus courants en Prompt Engineering</p>
+                </div>
+                
+                <div class="mistake-list">
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Instructions vagues ou ambiguës</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Manque de contexte suffisant</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Prompts trop longs ou complexes</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Absence d'exemples pour les tâches complexes</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Oubli de spécifier le format de sortie</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Instructions contradictoires</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Utilisation de jargon non défini</p>
+                    </div>
+                    <div class="mistake-item">
+                        <div>⚠️</div>
+                        <p>Manque de tests et d'itérations</p>
+                    </div>
+                </div>
+                
+                <div class="info-box yellow">
+                    <h3>💡 Conseil Clé</h3>
+                    <p>L'approche itérative est fondamentale : commencez simple, testez, analysez les résultats, et raffinez progressivement vos prompts. Chaque erreur est une opportunité d'apprentissage.</p>
+                </div>
+            </div>
+
+            <!-- Bonnes pratiques -->
+            <div id="practices" class="section">
+                <div class="gradient-card" style="background: linear-gradient(135deg, #10b981, #14b8a6);">
+                    <h2>Bonnes Pratiques</h2>
+                    <p>Les stratégies éprouvées pour réussir en Prompt Engineering</p>
+                </div>
+                
+                <div class="mistake-list">
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Commencer simple puis complexifier progressivement</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Utiliser des verbes d'action précis</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Définir clairement l'audience cible</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Spécifier le ton et le style souhaités</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Inclure des contraintes de longueur</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Tester avec différentes formulations</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Documenter les versions qui fonctionnent</p>
+                    </div>
+                    <div class="practice-item">
+                        <div>✅</div>
+                        <p>Collaborer avec d'autres experts</p>
+                    </div>
+                </div>
+                
+                <div class="info-box green">
+                    <h3>🎯 Méthodologie CLEAR</h3>
+                    <div class="methodology-grid">
+                        <div class="methodology-item"><strong>C</strong>larté</div>
+                        <div class="methodology-item"><strong>L</strong>ogique</div>
+                        <div class="methodology-item"><strong>E</strong>xemples</div>
+                        <div class="methodology-item"><strong>A</strong>daptation</div>
+                        <div class="methodology-item"><strong>R</strong>affinement</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mise en pratique -->
+            <div id="practice" class="section">
+                <div class="gradient-card" style="background: linear-gradient(135deg, #6366f1, #3b82f6);">
+                    <h2>Mise en Pratique</h2>
+                    <p>Exemples concrets et modèles à adapter</p>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-header">
+                        <span>▶️</span>
+                        <h3>Génération de texte</h3>
+                    </div>
+                    <div class="example-content">
+                        <div class="example-box">
+                            <p class="example-text">"Rédige un email professionnel de 150 mots pour présenter notre nouveau service à des clients potentiels du secteur financier. Adopte un ton confiant mais non agressif."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-header">
+                        <span>▶️</span>
+                        <h3>Analyse de données</h3>
+                    </div>
+                    <div class="example-content">
+                        <div class="example-box">
+                            <p class="example-text">"Analyse ce rapport de ventes trimestriel et identifie les 3 tendances principales. Présente tes conclusions sous forme de points clés avec des recommandations actionables."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-header">
+                        <span>▶️</span>
+                        <h3>Création d'image</h3>
+                    </div>
+                    <div class="example-content">
+                        <div class="example-box">
+                            <p class="example-text">"Crée une image d'une équipe diverse en réunion dans un bureau moderne, style photographique professionnel, éclairage naturel, composition équilibrée."</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box indigo">
+                    <h3>📝 Structure recommandée</h3>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>Introduction et contexte</li>
+                        <li>Tâche principale (verbe d'action)</li>
+                        <li>Contraintes et spécifications</li>
+                        <li>Format de réponse attendu</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Quiz -->
+            <div id="quiz" class="section">
+                <div class="gradient-card" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+                    <h2>Quiz Prompt Engineering</h2>
+                    <p>30 questions pour tester vos connaissances</p>
+                </div>
+                
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(1)">
+                        <div class="quiz-number">1</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-1">▶</span>
+                    </button>
+                    <div id="quiz-answer-1" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>L'art et la science de formuler des instructions précises pour guider les modèles d'intelligence artificielle vers les résultats souhaités.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(2)">
+                        <div class="quiz-number">2</div>
+                        <div class="quiz-question">
+                            <h3>Quelle est la différence entre zero-shot et few-shot learning ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-2">▶</span>
+                    </button>
+                    <div id="quiz-answer-2" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Zero-shot : sans exemple préalable. Few-shot : avec quelques exemples pour guider l'IA.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(3)">
+                        <div class="quiz-number">3</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que la technique Chain-of-Thought ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-3">▶</span>
+                    </button>
+                    <div id="quiz-answer-3" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Une méthode qui demande explicitement à l'IA de décomposer son raisonnement en étapes séquentielles visibles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(4)">
+                        <div class="quiz-number">4</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 4 objectifs principaux du Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-4">▶</span>
+                    </button>
+                    <div id="quiz-answer-4" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Précision optimale, adaptation sur mesure, pertinence maximale, efficacité et consistance.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(5)">
+                        <div class="quiz-number">5</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce qu'une hallucination en IA ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-5">▶</span>
+                    </button>
+                    <div id="quiz-answer-5" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>La génération d'informations qui semblent plausibles mais sont factuellement incorrectes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(6)">
+                        <div class="quiz-number">6</div>
+                        <div class="quiz-question">
+                            <h3>Que signifie RAG en Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-6">▶</span>
+                    </button>
+                    <div id="quiz-answer-6" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Retrieval-Augmented Generation : combinaison de génération de contenu avec récupération d'informations externes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(7)">
+                        <div class="quiz-number">7</div>
+                        <div class="quiz-question">
+                            <h3>Quelles sont les 3 composantes d'un prompt complexe ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-7">▶</span>
+                    </button>
+                    <div id="quiz-answer-7" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Instruction principale, contexte et contraintes, style et format.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(8)">
+                        <div class="quiz-number">8</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le meta-prompting ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-8">▶</span>
+                    </button>
+                    <div id="quiz-answer-8" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Des IA optimisant automatiquement d'autres prompts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(9)">
+                        <div class="quiz-number">9</div>
+                        <div class="quiz-question">
+                            <h3>Quelle est la principale différence entre Prompt Engineering et fine-tuning ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-9">▶</span>
+                    </button>
+                    <div id="quiz-answer-9" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Le Prompt Engineering est immédiat et flexible, le fine-tuning est long mais peut dépasser les limites du modèle original.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(10)">
+                        <div class="quiz-number">10</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce qu'un prompt template ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-10">▶</span>
+                    </button>
+                    <div id="quiz-answer-10" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Une structure prédéfinie et réutilisable avec des emplacements réservés (placeholders) personnalisables.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(11)">
+                        <div class="quiz-number">11</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 4 piliers de l'évaluation d'un prompt ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-11">▶</span>
+                    </button>
+                    <div id="quiz-answer-11" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Métriques claires, tests systématiques, évaluation comparative, feedback utilisateur.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(12)">
+                        <div class="quiz-number">12</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que l'approche 'Human in the loop' ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-12">▶</span>
+                    </button>
+                    <div id="quiz-answer-12" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Intégration systématique de l'intervention humaine dans le processus IA pour validation et guidage.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(13)">
+                        <div class="quiz-number">13</div>
+                        <div class="quiz-question">
+                            <h3>Quelles sont les principales sources d'ambiguïté dans les prompts ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-13">▶</span>
+                    </button>
+                    <div id="quiz-answer-13" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Termes polysémiques, instructions vagues, demandes contradictoires, contexte insuffisant, jargon non défini.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(14)">
+                        <div class="quiz-number">14</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que l'instruction tuning ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-14">▶</span>
+                    </button>
+                    <div id="quiz-answer-14" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Entraînement spécifique d'un modèle à suivre des instructions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(15)">
+                        <div class="quiz-number">15</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 4 types de professionnels qui pratiquent le Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-15">▶</span>
+                    </button>
+                    <div id="quiz-answer-15" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Professionnels techniques, créateurs de contenu, professionnels non-techniques, secteur éducatif.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(16)">
+                        <div class="quiz-number">16</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le prompt injection ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-16">▶</span>
+                    </button>
+                    <div id="quiz-answer-16" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Tentative de manipulation des instructions du modèle pour contourner les garde-fous.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(17)">
+                        <div class="quiz-number">17</div>
+                        <div class="quiz-question">
+                            <h3>Quelles sont les 4 modalités du Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-17">▶</span>
+                    </button>
+                    <div id="quiz-answer-17" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Génération de texte, création d'images, génération de code, création audio.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(18)">
+                        <div class="quiz-number">18</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le context window ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-18">▶</span>
+                    </button>
+                    <div id="quiz-answer-18" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>La limite de la quantité d'information que le modèle peut considérer en une seule fois.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(19)">
+                        <div class="quiz-number">19</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 3 types de certifications en Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-19">▶</span>
+                    </button>
+                    <div id="quiz-answer-19" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Certifications officielles, badges de compétence, portfolios de réalisations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(20)">
+                        <div class="quiz-number">20</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le prompt chaining ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-20">▶</span>
+                    </button>
+                    <div id="quiz-answer-20" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Séquence de prompts où chaque sortie alimente l'entrée suivante.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(21)">
+                        <div class="quiz-number">21</div>
+                        <div class="quiz-question">
+                            <h3>Quelles sont les 4 étapes de l'amélioration continue ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-21">▶</span>
+                    </button>
+                    <div id="quiz-answer-21" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Analyse des échecs, intégration du feedback, raffinement itératif, expérimentation contrôlée.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(22)">
+                        <div class="quiz-number">22</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le role prompting ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-22">▶</span>
+                    </button>
+                    <div id="quiz-answer-22" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Attribution d'un rôle spécifique au modèle pour orienter ses réponses.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(23)">
+                        <div class="quiz-number">23</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 4 aspects de la gouvernance en Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-23">▶</span>
+                    </button>
+                    <div id="quiz-answer-23" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Considérations juridiques, sécurité des données, équité et inclusion, transparence.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(24)">
+                        <div class="quiz-number">24</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que la data curation en Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-24">▶</span>
+                    </button>
+                    <div id="quiz-answer-24" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Vérification de l'exactitude des informations, élimination des redondances, et organisation logique des connaissances.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(25)">
+                        <div class="quiz-number">25</div>
+                        <div class="quiz-question">
+                            <h3>Quelles sont les 3 voies principales de formation en Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-25">▶</span>
+                    </button>
+                    <div id="quiz-answer-25" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>MOOCs et formations en ligne, formations académiques, bootcamps intensifs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(26)">
+                        <div class="quiz-number">26</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le self-consistency ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-26">▶</span>
+                    </button>
+                    <div id="quiz-answer-26" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Génération de multiples réponses pour identifier la plus cohérente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(27)">
+                        <div class="quiz-number">27</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 4 éléments du futur du Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-27">▶</span>
+                    </button>
+                    <div id="quiz-answer-27" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Meta-prompting, prompt orchestration, interfaces sans prompts, démocratisation assistée.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(28)">
+                        <div class="quiz-number">28</div>
+                        <div class="quiz-question">
+                            <h3>Qu'est-ce que le Tree of Thoughts (ToT) ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-28">▶</span>
+                    </button>
+                    <div id="quiz-answer-28" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Évolution du Chain-of-Thought qui explore plusieurs chemins de raisonnement parallèles avant de converger vers une solution.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(29)">
+                        <div class="quiz-number">29</div>
+                        <div class="quiz-question">
+                            <h3>Quelles sont les 4 étapes pour construire une démo impactante ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-29">▶</span>
+                    </button>
+                    <div id="quiz-answer-29" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Choisir un cas d'usage percutant, préparer une comparaison avant/après, rendre la démonstration interactive, raconter l'histoire complète.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-item">
+                    <button class="quiz-header" onclick="toggleQuiz(30)">
+                        <div class="quiz-number">30</div>
+                        <div class="quiz-question">
+                            <h3>Quels sont les 4 conseils pratiques pour réussir en Prompt Engineering ?</h3>
+                        </div>
+                        <span class="chevron" id="quiz-chevron-30">▶</span>
+                    </button>
+                    <div id="quiz-answer-30" class="quiz-answer">
+                        <div class="answer-box">
+                            <p>Commencer simple, itérer rapidement, maintenir une veille active, collaborer et partager.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Masquer toutes les sections
+            var sections = document.getElementsByClassName('section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            
+            // Désactiver tous les onglets
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Afficher la section sélectionnée
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activer l'onglet cliqué
+            event.target.classList.add('active');
+        }
+
+        function toggleSection(sectionId) {
+            var content = document.getElementById('content-' + sectionId);
+            var chevron = document.getElementById('chevron-' + sectionId);
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                chevron.innerHTML = '▶';
+                chevron.classList.remove('rotated');
+            } else {
+                content.classList.add('show');
+                chevron.innerHTML = '▼';
+                chevron.classList.add('rotated');
+            }
+        }
+
+        function toggleQuiz(questionId) {
+            var answer = document.getElementById('quiz-answer-' + questionId);
+            var chevron = document.getElementById('quiz-chevron-' + questionId);
+            
+            if (answer.classList.contains('show')) {
+                answer.classList.remove('show');
+                chevron.innerHTML = '▶';
+                chevron.classList.remove('rotated');
+            } else {
+                answer.classList.add('show');
+                chevron.innerHTML = '▼';
+                chevron.classList.add('rotated');
+            }
+        }
+    </script>
+</body>
+</html>
